@@ -5,7 +5,7 @@ const InfoRow = (props) => {
     const boxes = props.box.map(({title,count}) => {
       const style = {height: "14rem"}
       return (
-        <div className="col-md text-center my-auto">
+        <div key={title} className="col-md text-center my-auto">
           <div className="card card-block d-flex p-0" style={style}>
             <div className="my-auto card-body">
               <div 

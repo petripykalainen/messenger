@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 
 import SearchForm from './SearchForm';
 import InfoRow from './InfoRow';
@@ -13,54 +14,73 @@ class App extends React.Component {
       boxes: [
         {
           title: "Total conversation count",
-          count: 1233
+          count: 0
         },
         {
           title: "Total user message count",
-          count: 43211
+          count: 0
         },
         {
           title: "Total visitor message count",
-          count: 32223
+          count: 0
         },
       ]
     }
   }
 
   componentDidMount(){
-    console.log('Component did mount!')
-    // Try Read local storage and do get request
+
   }
 
   componentDidUpdate(prevProps, prevState){
     if (prevState !== this.state.access_token) {
-      this.isValidDate(this.state.start_date)
-      console.log('Old: ', prevState.start_date)
-      console.log('New: ', this.state.start_date)
+
     }
   }
 
-  isValidDate(datestring) {
-    if (/\d{4}-\d{2}-\d{2}/.test(datestring)) {
-      console.log('DATE VALID!')
+  // setValue = (e) => {
+  //   // console.log(e.value);
+  //   this.setState({
+  //     [e.name]: e.value
+  //   })
+  // }
+
+  fetchMessages = async (data) => {
+    try {
+      let response =
+          await axios.get(`https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${data.sd}&end_date=${data.ed}`, {
+        headers: {
+          'Authorization': `Token ${data.at}`
+        }
+      });
+
+      this.setState({
+        boxes: [
+          {
+            ...this.state.boxes[0],
+            count: response.data.total_conversation_count
+          },
+          {
+            ...this.state.boxes[1],
+            count: response.data.total_user_message_count
+          },
+          {
+            ...this.state.boxes[2],
+            count: response.data.total_visitor_message_count
+          }
+        ]
+      })
+    } catch (err) {
+      console.log(err)
     }
-    // console.log('split string 1: ', date[0]);
-    // console.log('split string 2: ', date[1]);
-    // console.log('split string 3: ', date[3]);
-  }
-  
-  setValue = (e) => {
-    console.log(e.value);
-    this.setState({ 
-      [e.name]: e.value 
-    })
+
   }
 
   render(){
     return (
       <div>
-        <SearchForm 
-          handleInput={this.setValue}
+        <SearchForm
+          submitForm={this.fetchMessages}
         />
         <InfoRow
           box={this.state.boxes}
