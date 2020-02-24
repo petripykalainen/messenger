@@ -11,6 +11,20 @@ class SearchForm extends React.Component {
       errors: {}
     }
   }
+  
+  componentDidMount(){
+    try {
+      let data = JSON.parse(localStorage.getItem('userdata'))
+      this.setState({
+        start_date: data.sd,
+        end_date: data.ed,
+        access_token: data.at,
+      })
+      this.props.submitForm(data);
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   handleInputChange = (event) => {
     this.setState({
@@ -29,7 +43,7 @@ class SearchForm extends React.Component {
         ed: this.state.end_date,
         at: this.state.access_token,
       }
-      localStorage.clear();
+      // localStorage.clear();
       localStorage.setItem('userdata', JSON.stringify(data))
       this.props.submitForm(data);
     }

@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import SearchForm from './SearchForm';
 import InfoRow from './InfoRow';
+import Table from './Table';
 
 class App extends React.Component {
   constructor(props){
@@ -11,6 +12,7 @@ class App extends React.Component {
       start_date: '',
       end_date: '',
       access_token: '',
+      data: [],
       boxes: [
         {
           title: "Total conversation count",
@@ -28,22 +30,11 @@ class App extends React.Component {
     }
   }
 
-  componentDidMount(){
-
-  }
-
   componentDidUpdate(prevProps, prevState){
     if (prevState !== this.state.access_token) {
 
     }
   }
-
-  // setValue = (e) => {
-  //   // console.log(e.value);
-  //   this.setState({
-  //     [e.name]: e.value
-  //   })
-  // }
 
   fetchMessages = async (data) => {
     try {
@@ -54,7 +45,17 @@ class App extends React.Component {
         }
       });
 
+      for (var i = 0; i < response.data.by_date.length; i+=5) {
+        console.log('start: ', i)
+        console.log('end: ', i+5)
+        let d = response.data.by_date.slice(i, i+5);
+        console.log(d);
+      }
+
       this.setState({
+        pageCount: Math.ceil(response.data.by_date.length/5),
+        pageIndex: 1,
+        data: response.data.by_date,
         boxes: [
           {
             ...this.state.boxes[0],
@@ -84,6 +85,9 @@ class App extends React.Component {
         />
         <InfoRow
           box={this.state.boxes}
+        />
+        <Table
+          data={this.state.data}
         />
       </div>
     );
