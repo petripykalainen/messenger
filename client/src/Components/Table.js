@@ -1,6 +1,9 @@
 import React from 'react';
 
+import './Table.css'
+
 function renderTableRow(data) {
+
   return data.map((data, i) => {
     let date = formatDate(data.date);
     return(
@@ -26,8 +29,27 @@ function formatDate(datestring){
   return date;
 }
 
-const Table = ({data}) => {
-  console.log(data)
+const renderSortArrow = (d) => {
+  if (d) {
+    return <i style={{position: "absolute"}} className="material-icons">arrow_drop_down</i>    
+  }
+  return <i style={{position: "absolute"}} className="material-icons">arrow_drop_up</i>
+}
+
+const Table = ({data, sortByDate, descending}) => {
+  let tablerow;
+  let sortArrow = renderSortArrow(descending);
+
+  if (!data) {
+    tablerow = (
+      <tr>
+        <td>Empty</td>
+      </tr>
+    )
+  } else {
+    tablerow = renderTableRow(data);
+  }
+
   return(
     <div className="table-responsive my-2">
       <table className="table">
@@ -36,11 +58,16 @@ const Table = ({data}) => {
             <th scope="col">conversation count</th>
             <th scope="col">missed chat count</th>
             <th scope="col">visitors with conversations count</th>
-            <th scope="col">Date</th>
+            <th className="sortable-thingy" onClick={() => sortByDate(!descending)} scope="col">
+              Date
+              <span>
+                {sortArrow}
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {renderTableRow(data)}
+          {tablerow}
         </tbody>
       </table>
     </div>

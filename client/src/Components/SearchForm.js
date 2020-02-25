@@ -26,6 +26,15 @@ class SearchForm extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    let errors = this.props.errors.access_token !== prevState.errors.access_token;
+    if (errors) {
+      this.setState({
+        errors: this.props.errors
+      })
+    }
+  }
+
   handleInputChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value
@@ -43,7 +52,6 @@ class SearchForm extends React.Component {
         ed: this.state.end_date,
         at: this.state.access_token,
       }
-      // localStorage.clear();
       localStorage.setItem('userdata', JSON.stringify(data))
       this.props.submitForm(data);
     }
@@ -61,13 +69,14 @@ class SearchForm extends React.Component {
     if (state.start_date === '') {
       errors.start_date = "Set a starting date!"
     }
-    if (!/\d{4}-\d{2}-\d{2}/.test(state.start_date) && state.start_date.length > 0) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(state.start_date) && state.start_date.length > 0) {
+      console.log('INCORRECT FORMAT!')
       errors.start_date = "Use yyyy-mm-dd format!"
     }
     if (state.end_date === '') {
       errors.end_date = "Set a end date!"
     }
-    if (!/\d{4}-\d{2}-\d{2}/.test(state.end_date) && state.end_date.length > 0) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(state.end_date) && state.end_date.length > 0) {
       errors.end_date = "Use yyyy-mm-dd format!"
     }
 
@@ -99,7 +108,6 @@ class SearchForm extends React.Component {
             value={this.state.start_date}
             onChange={e => this.handleInputChange(e)}
             type="text"
-      /* required pattern="\d{4}-\d{2}-\d{2}" */
           />
           {this.renderError(this.state.errors.start_date)}
         </div>
@@ -111,7 +119,6 @@ class SearchForm extends React.Component {
             value={this.state.end_date}
             onChange={e => this.handleInputChange(e)}
             type="text"
-      /* required pattern="\d{4}-\d{2}-\d{2}" */
           />
           {this.renderError(this.state.errors.end_date)}
         </div>
@@ -130,21 +137,10 @@ class SearchForm extends React.Component {
               onChange={e => this.handleInputChange(e)}
             />
           </div>
+          <div className="col">
+            {this.renderError(this.state.errors.access_token)}
+          </div>
         </form>
-        {/* <form> */}
-
-        {/*   <div className="navbar-brand col-3"> */}
-        {/*     <label>End date </label> */}
-        {/*     <input  */}
-        {/*       className="form-control form-control-lg" */}
-        {/*       name="end_date" */}
-        {/*       value={this.state.end_date} */}
-        {/*       onChange={e => this.handleInputChange(e)} */}
-        {/*       type="text" */}
-        {/*       required pattern="\d{4}-\d{2}-\d{2}" */}
-        {/*     /> */}
-        {/*   </div> */}
-        {/* </form> */}
       </div>
 
     );
