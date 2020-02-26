@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
-import ReactPaginate from 'react-paginate';
 
 import SearchForm from './SearchForm';
 import InfoRow from './InfoRow';
 import Table from './Table';
+import Pagination from './Pagination'
+import Greeter from './Greeter'
 
 class App extends React.Component {
   constructor(props){
@@ -45,7 +45,7 @@ class App extends React.Component {
       pageIndex: params.selected
     })
   }
-  
+
   sortByDate = (d) => {
     let newArr = this.state.data;
 
@@ -82,113 +82,96 @@ class App extends React.Component {
     return this.state.data.slice(i, chunk);
   }
 
-  fetchMessages = async (data) => {
+  mapMessagesToState = (data) => {
     try {
-      let response =
-          await axios.get(`https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${data.sd}&end_date=${data.ed}`, {
-            headers: {
-              'Authorization': `Token ${data.at}`
-            }
-          });
-
-      let da = response.data.by_date;
+      let da = data.by_date;
       da.sort((a,b) => {
         return (new Date(a.date).getTime() < new Date(b.date).getTime() ? -1 : 1);
       });
 
       this.setState({
-        pageCount: Math.ceil(response.data.by_date.length/5),
+        pageCount: Math.ceil(data.by_date.length/5),
         pageIndex: 0,
         data: da,
         boxes: [
           {
             ...this.state.boxes[0],
-            count: response.data.total_conversation_count
+            count: data.total_conversation_count
           },
           {
             ...this.state.boxes[1],
-            count: response.data.total_user_message_count
+            count: data.total_user_message_count
           },
           {
             ...this.state.boxes[2],
-            count: response.data.total_visitor_message_count
+            count: data.total_visitor_message_count
           }
         ]
       })
     } catch (err) {
-      let code = parseInt(err.message.split(' ').pop());
-      let errors = {};
-      if (code === 400) {
-        // Not found!
-        console.log('Not found!')
-      }
-      if (code === 401) {
-        // Unauthorized!
-        errors.access_token = 'Invalid access token!'
-        this.setState({
-          errors
-        })        
-        console.log('Unauthorized!')
-        localStorage.clear();
-      }
+      console.log(err)
     }
   }
 
-  render(){
-    let table;
-    if (this.state.data.length < 1) {
-      table = <Table descending={this.state.descending} sortByDate={this.sortByDate}/>
-    } else {
-      table = (<Table 
-                 descending={this.state.descending}
-                 data={
-                   this.fetchData(this.state.pageIndex)
-                 }
-                 sortByDate={this.sortByDate}
-                   />)
+  renderApp = (array) => {
+    if (array.length < 1) {
+      return (
+      <React.Fragment>
+        <SearchForm
+          sendData={this.mapMessagesToState}
+        />
+        <Greeter/>
+      </React.Fragment>
+      )
     }
     return (
-      <div>
+      <React.Fragment>
         <SearchForm
-          errors={this.state.errors}
-          submitForm={this.fetchMessages}
+          sendData={this.mapMessagesToState}
         />
         <InfoRow
           box={this.state.boxes}
         />
-        {table}
-        <ReactPaginate
-          pageCount={this.state.pageCount}
-          pageRangeDisplayed={3}
-          marginPagesDisplayed={1}
-          previousLabel={
-            <React.Fragment>
-              <span aria-hidden="true">&laquo;</span>
-              <span className="sr-only">Previous</span>
-            </React.Fragment>
+        <Table
+          descending={this.state.descending}
+          data={
+            this.fetchData(this.state.pageIndex)
           }
-          nextLabel={
-            <React.Fragment>
-              <span aria-hidden="true">&raquo;</span>
-              <span className="sr-only">Previous</span>
-            </React.Fragment>
-          }
-          breakClassName={'page-item'}
-          breakLinkClassName={'page-link'}
-          containerClassName={'pagination justify-content-center'}
-          pageClassName={'page-item'}
-          pageLinkClassName={'page-link'}
-          activeClassName={'active'}
-          activeLinkClassName={'active'}
-          previousClassName={'page-item'}
-          nextClassName={'page-item'}
-          onPageChange={this.paginationOnChange}
-          previousLinkClassName={'page-link'}
-          nextLinkClassName={'page-link'}
-          disabledClassName={'disabled'}
+          sortByDate={this.sortByDate}
         />
-      </div>
+        <Pagination
+          paginationOnChange={this.paginationOnChange}
+          pageCount={this.state.pageCount}
+        />
+      </React.Fragment>
+    );
+  }
 
+  render(){
+    // let table;
+
+    // if (this.state.data.length < 1) {
+    //   table = <Table descending={this.state.descending} sortByDate={this.sortByDate}/>
+    // } else {
+    //   table = ()
+    // }
+
+    return (
+      <div>
+        {/* <SearchForm */}
+        {/*   sendData={this.mapMessagesToState} */}
+        {/* /> */}
+        {/* <Greeter/> */}
+        {/* <InfoRow */}
+        {/*   box={this.state.boxes} */}
+        {/* /> */}
+        {/* {table} */}
+        {/* <Pagination */}
+        {/*   paginationOnChange={this.paginationOnChange} */}
+        {/*   pageCount={this.state.pageCount} */}
+        {/* /> */}
+        {this.renderApp(this.state.data)}
+      </div>
     );
   }
 }
