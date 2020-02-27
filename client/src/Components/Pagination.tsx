@@ -1,7 +1,12 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
 
-const Pagination = ({pageCount, paginationOnChange}) => {
+interface PaginationProps {
+  pageCount: number,
+  paginationOnChange: (obj: { selected: number }) => void
+}
+
+const Pagination: React.FC<PaginationProps> = ({ pageCount, paginationOnChange }) => {
   return (
     <ReactPaginate
       pageCount={pageCount}
@@ -32,6 +37,7 @@ const Pagination = ({pageCount, paginationOnChange}) => {
       previousLinkClassName={'page-link'}
       nextLinkClassName={'page-link'}
       disabledClassName={'disabled'}
+      forcePage={0}
     />
   );
 }

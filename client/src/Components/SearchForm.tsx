@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { ChangeEvent, FormEvent } from 'react';
 import _ from 'lodash';
 import axios from 'axios'
 
-class SearchForm extends React.Component {
-  constructor(props){
+interface FormProps {
+  sendData: (data: any) => void
+}
+
+interface FormError {
+  start_date?: string,
+  end_date?: string,
+  access_token?: string
+}
+
+interface FormState {
+  start_date: string,
+  end_date: string,
+  access_token: string,
+  errors: FormError
+}
+
+interface UserData {
+  sd: string,
+  ed: string,
+  at: string
+}
+
+class SearchForm extends React.Component<FormProps, FormState> {
+  constructor(props: FormProps) {
     super(props);
     this.state = {
       start_date: "",
@@ -13,34 +36,41 @@ class SearchForm extends React.Component {
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     try {
-      let data = JSON.parse(localStorage.getItem('userdata'))
-      this.setState({
-        start_date: data.sd,
-        end_date: data.ed,
-        access_token: data.at,
-      })
+      const localdata = localStorage.getItem('userdata')
+
+      if (typeof localdata === 'string') {
+        const data = JSON.parse(localdata)
+
+        this.setState({
+          start_date: data.sd,
+          end_date: data.ed,
+          access_token: data.at,
+        })
+      }
     } catch (err) {
+      console.log(err)
     }
+
   }
 
-  fetchMessages = async (data) => {
+  fetchMessages = async (data: UserData) => {
     try {
       let response =
-          await axios.get(`https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${data.sd}&end_date=${data.ed}`, {
-            headers: {
-              'Authorization': `Token ${data.at}`
-            }
-          });
+        await axios.get(`https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${data.sd}&end_date=${data.ed}`, {
+          headers: {
+            'Authorization': `Token ${data.at}`
+          }
+        });
       this.props.sendData(response.data)
     } catch (err) {
       let code = parseInt(err.message.split(' ').pop());
-      let errors = {};
+      let errors: FormError = {};
 
       if (code === 400) {
         // Not found!
-        errors.data = 'No data found'
+        // errors.data = 'No data found'
 
       }
 
@@ -56,15 +86,14 @@ class SearchForm extends React.Component {
 
   }
 
-  handleInputChange = (event) => {
-
-    this.setState({
-      [event.target.name]: event.target.value,
-      errors: {...this.state.errors, [event.target.name]: ''}
-    });
+  handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    this.setState<never>({
+      [event.target.name]: event.target.value
+    })
+    // errors: { ...this.state.errors, [event.target.name]: '' }
   }
 
-  handleFormSubmit = (event) => {
+  handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     let errors = this.dateFormValidation(this.state);
@@ -79,8 +108,7 @@ class SearchForm extends React.Component {
 
       this.fetchMessages(data);
     }
-    else
-    {
+    else {
 
       this.setState({
         ...this.state, errors
@@ -88,8 +116,8 @@ class SearchForm extends React.Component {
     }
   }
 
-  dateFormValidation = (state) => {
-    const errors = {};
+  dateFormValidation = (state: FormState) => {
+    const errors: FormError = {};
 
     if (state.access_token === '') {
       errors.access_token = "Enter valid access token!"
@@ -111,20 +139,22 @@ class SearchForm extends React.Component {
     return errors;
   }
 
-  renderError(error){
+  renderError(error: string | undefined) {
     if (error) {
       return (
         <div className="mt-1 alert alert-danger alert-dismissible fade show" role="alert">
-          <strong>Error! </strong>{error }
+          <strong>Error! </strong>{error}
           <button type="button" className="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
       )
     }
+
   }
 
   render() {
+    let { start_date, end_date, access_token } = this.state.errors;
     return (
       <div className="row my-3">
         <div className="col-sm-3 my-1">
@@ -137,7 +167,7 @@ class SearchForm extends React.Component {
             onChange={e => this.handleInputChange(e)}
             type="text"
           />
-          {this.renderError(this.state.errors.start_date)}
+          {this.renderError(start_date)}
         </div>
         <div className="col-sm-3 my-1">
           <label>End date </label>
@@ -148,7 +178,7 @@ class SearchForm extends React.Component {
             onChange={e => this.handleInputChange(e)}
             type="text"
           />
-          {this.renderError(this.state.errors.end_date)}
+          {this.renderError(end_date)}
         </div>
 
         <form className="offset-sm-2 col-sm-4" onSubmit={this.handleFormSubmit}>
@@ -166,7 +196,7 @@ class SearchForm extends React.Component {
             />
           </div>
           <div className="col">
-            {this.renderError(this.state.errors.access_token)}
+            {this.renderError(access_token)}
           </div>
         </form>
       </div>
