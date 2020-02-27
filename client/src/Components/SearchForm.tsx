@@ -50,7 +50,6 @@ class SearchForm extends React.Component<FormProps, FormState> {
         })
       }
     } catch (err) {
-      console.log(err)
     }
 
   }

@@ -52,8 +52,6 @@ class App extends React.Component<Props, State> {
   }
 
   paginationOnChange = (params: { selected: number }) => {
-    console.log('pagination change! ')
-    console.log(params.selected)
     this.setState({
       ...this.state,
       pageIndex: params.selected
@@ -117,7 +115,6 @@ class App extends React.Component<Props, State> {
         ]
       })
     } catch (err) {
-      console.log(err)
     }
   }
 
