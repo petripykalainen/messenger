@@ -44,12 +44,14 @@ class SearchForm extends React.Component<FormProps, FormState> {
         const data = JSON.parse(localdata)
 
         this.setState({
+          ...this.state,
           start_date: data.sd,
           end_date: data.ed,
           access_token: data.at,
         })
       }
     } catch (err) {
+
     }
 
   }
@@ -62,16 +64,12 @@ class SearchForm extends React.Component<FormProps, FormState> {
             'Authorization': `Token ${data.at}`
           }
         });
+
       this.props.sendData(response.data)
+      localStorage.setItem('userdata', JSON.stringify(data))
     } catch (err) {
       let code = parseInt(err.message.split(' ').pop());
       let errors: FormError = {};
-
-      if (code === 400) {
-        // Not found!
-        // errors.data = 'No data found'
-
-      }
 
       if (code === 401) {
         // Unauthorized!
@@ -79,6 +77,7 @@ class SearchForm extends React.Component<FormProps, FormState> {
 
       }
       this.setState({
+        ...this.state,
         errors
       })
     }
@@ -87,9 +86,9 @@ class SearchForm extends React.Component<FormProps, FormState> {
 
   handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     this.setState<never>({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
+      errors: { ...this.state.errors, [event.target.name]: '' }
     })
-    // errors: { ...this.state.errors, [event.target.name]: '' }
   }
 
   handleFormSubmit = (event: FormEvent) => {
@@ -103,14 +102,15 @@ class SearchForm extends React.Component<FormProps, FormState> {
         ed: this.state.end_date,
         at: this.state.access_token,
       }
-      localStorage.setItem('userdata', JSON.stringify(data))
+      // localStorage.setItem('userdata', JSON.stringify(data))
 
       this.fetchMessages(data);
     }
     else {
 
       this.setState({
-        ...this.state, errors
+        ...this.state,
+        errors
       })
     }
   }

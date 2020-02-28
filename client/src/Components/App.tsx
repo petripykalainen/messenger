@@ -97,6 +97,7 @@ class App extends React.Component<Props, State> {
       });
 
       this.setState({
+        ...this.state,
         pageCount: Math.ceil(data.by_date.length / 5),
         data: da,
         pageIndex: 0,
