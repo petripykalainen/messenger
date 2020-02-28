@@ -5,6 +5,7 @@ import InfoRow from './InfoRow';
 import Table from './Table';
 import Pagination from './Pagination'
 import { Greeter } from './Greeter'
+import Graph from './Graph';
 
 import { ConversationData, Conversation } from './types/Types'
 
@@ -143,6 +144,9 @@ class App extends React.Component<Props, State> {
             this.fetchData(this.state.pageIndex)
           }
           sortByDate={this.sortByDate}
+        />
+        <Graph
+          data={this.state.data}
         />
         <Pagination
           paginationOnChange={this.paginationOnChange}
