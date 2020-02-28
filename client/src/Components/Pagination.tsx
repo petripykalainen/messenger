@@ -26,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({ pageCount, paginationOnChange }
       }
       breakClassName={'page-item'}
       breakLinkClassName={'page-link'}
-      containerClassName={'pagination justify-content-center'}
+      containerClassName={'pagination justify-content-center my-4'}
       pageClassName={'page-item'}
       pageLinkClassName={'page-link'}
       activeClassName={'active'}

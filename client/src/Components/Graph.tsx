@@ -7,7 +7,6 @@ interface Data {
   datasets: {
     label: string,
     backgroundColor: string,
-    fill: boolean,
     borderColor: string,
     data: number[]
   }[]
@@ -47,7 +46,6 @@ const chartData = (data: Conversation[]): Data => {
       {
         label: 'conversation count',
         backgroundColor: 'rgba(255,128,0,0.2)',
-        fill: false,
         borderColor: 'red',
         data: generateData(data, "conversation_count"),
 
@@ -55,14 +53,12 @@ const chartData = (data: Conversation[]): Data => {
       {
         label: 'missed chat count',
         backgroundColor: 'rgba(0,255,128,0.2)',
-        fill: false,
         borderColor: 'green',
         data: generateData(data, "missed_chat_count"),
       },
       {
         label: 'visitors with conversations count',
         backgroundColor: 'rgba(128,0,255,0.2)',
-        fill: false,
         borderColor: 'blue',
         data: generateData(data, "visitors_with_conversation_count"),
       }
@@ -79,7 +75,7 @@ class Chart extends React.Component<ChartProps, ChartState> {
     }
   }
 
-  componentDidUpdate(prevProps: ChartProps, prevState: ChartState, snapshot: any) {
+  componentDidUpdate() {
     if (this.props.data !== this.state.conversationData) {
       this.setState({
         ...this.state,
@@ -90,11 +86,9 @@ class Chart extends React.Component<ChartProps, ChartState> {
 
   }
 
-
-
   render() {
     return (
-      <div className="m-2">
+      <div className="my-4">
         <Line
           data={this.state.data}
         />
