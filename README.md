@@ -34,5 +34,5 @@ Now the docker container is running at port 80 on localhost.
 - [x] Submitted data is stored in localstorage
 - [x] Typescript
 - [x] Line graphs based on table data.
-- [x] Application running at Digital Ocean droplet [Right here](http://104.248.133.27/)
+~~- [x] Application running at Digital Ocean droplet [Right here](http://104.248.133.27/)~~
 - [x] Docker contained

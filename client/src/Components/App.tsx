@@ -9,9 +9,9 @@ import Graph from './Graph';
 
 import { ConversationData, Conversation } from './types/Types'
 
-interface Props { };
+interface AppProps { };
 
-interface State {
+interface AppState {
   start_date: string,
   end_date: string,
   access_token: string,
@@ -23,8 +23,8 @@ interface State {
   boxes: { title: string, count: number }[]
 };
 
-class App extends React.Component<Props, State> {
-  constructor(props: any) {
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
     super(props);
     this.state = {
       start_date: '',
@@ -61,7 +61,6 @@ class App extends React.Component<Props, State> {
 
   sortByDate = (d: boolean) => {
     let newArr = this.state.data;
-
     function sortDesc(a: Conversation, b: Conversation) {
       return (new Date(a.date).getTime() > new Date(b.date).getTime() ? -1 : 1);
     }
