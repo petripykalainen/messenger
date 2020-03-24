@@ -1,1 +1,4 @@
 accesstoken
+pgdata
+.log
+node_modules

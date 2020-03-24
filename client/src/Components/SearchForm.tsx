@@ -64,7 +64,7 @@ class SearchForm extends React.Component<FormProps, FormState> {
             'Authorization': `Token ${data.at}`
           }
         });
-
+      console.log(response.data)
       this.props.sendData(response.data)
       localStorage.setItem('userdata', JSON.stringify(data))
     } catch (err) {
