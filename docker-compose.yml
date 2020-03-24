@@ -2,7 +2,6 @@ version: '3'
 
 services:
   nginx:
-    #image: nginx
     build: ./nginx
     restart: always
     depends_on:
@@ -20,7 +19,7 @@ services:
       - ./client/public:/usr/app/client/public:z
     # ports:
       # - "3000:3000"
-      
+
   backend:
     entrypoint: ["/bin/sh", "./entrypoint.sh"]
     build: ./backend
@@ -29,8 +28,8 @@ services:
     environment:
       DB_HOST: db
     volumes:
-      - ./backend/src:/usr/app/backend/src:z # SELinux workaround 
-    #ports: 
+      - ./backend/src:/usr/app/backend/src:z # SELinux workaround
+    #ports:
     #  - "5000:5000"
 
   db:
@@ -39,7 +38,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: username
       POSTGRES_DB: user_database
-    volumes:    
-      - ./backend/pgdata:/var/lib/postgresql/data:z # SELinux workaround 
+      #volumes:
+      #- ./backend/pgdata:/var/lib/postgresql/data:z # SELinux workaround
         #    ports:
         #- "5432:5432"

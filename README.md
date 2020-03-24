@@ -1,6 +1,6 @@
  # Messenger
 ## Features
-React application with that fetches conversations from api with an provided access token and a date range and then displays information about it.
+React application with that fetches conversations from api with an provided access token and a date range and then displays information about it. Currently any string will do for a token but date range must be valid.
 
  - Data
    - Three info boxes  
@@ -12,27 +12,26 @@ React application with that fetches conversations from api with an provided acce
      - `missed_chat_count`
      - `visitors_with_conversation_count`.
 
+App uses:
+ - React
+ - Express
+ - PostgreSQL
+ - Docker
+
+## Screenshot
+![](/screenshot.png)
+
 ## Running the application
-App runs on a docker container so only building and running the image is required.
+Docker-compose and docker is required for running the application.
 
 Run in root folder:
-`docker build .`
+`docker-compose up`
 
-Either give it a name with -t {name_here} or copy the id when build finishes.
-`docker build -t messenger .`
-
-Syntax;
-`docker run -p {port_on_host}:80 {name | id}`
-
-`docker run -p 80:80 messenger`
-Now the docker container is running at port 80 on localhost.
-
-
+App will be available on port 80 at localhost.
 
 ### Featuring
 - [x] React
 - [x] Submitted data is stored in localstorage
 - [x] Typescript
 - [x] Line graphs based on table data.
-~~- [x] Application running at Digital Ocean droplet [Right here](http://104.248.133.27/)~~
-- [x] Docker contained
+- [x] Docker
