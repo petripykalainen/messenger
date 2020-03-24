@@ -35,7 +35,7 @@ app.use(cors(corsOptions));
 // Routes
 
 app.get('/api/conversation', async (req, res) => {
-  let from, to, token;
+  let from, to;
 
   try {
     from = new Date(req.query.from)

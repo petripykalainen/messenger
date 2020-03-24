@@ -58,12 +58,7 @@ class SearchForm extends React.Component<FormProps, FormState> {
 
   fetchMessages = async (data: UserData) => {
     try {
-      let response =
-        await axios.get(`https://api.giosg.com/api/reporting/v1/rooms/84e0fefa-5675-11e7-a349-00163efdd8db/chat-stats/daily/?start_date=${data.sd}&end_date=${data.ed}`, {
-          headers: {
-            'Authorization': `Token ${data.at}`
-          }
-        });
+      let response = await axios.get(`/api/conversation?from=${data.sd}&to=${data.ed}`);
       console.log(response.data)
       this.props.sendData(response.data)
       localStorage.setItem('userdata', JSON.stringify(data))
