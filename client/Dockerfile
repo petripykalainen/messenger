@@ -1,4 +1,4 @@
-FROM node:alpine as build
+FROM node:13 as build
 
 WORKDIR '/messenger'
 
